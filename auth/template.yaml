@@ -14,7 +14,7 @@ Resources:
   AuthenticationFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: lambda/built
+      CodeUri: lambda/built/
       Handler: app.lambdaHandler
       Runtime: nodejs14.x
     Events:
