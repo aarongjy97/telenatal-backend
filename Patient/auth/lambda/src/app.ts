@@ -19,7 +19,7 @@ export const lambdaHandler = async (
         return responseBuilder(500, "Unknown Error");
     }
   } catch (error) {
-    return responseBuilder(500, error.msg);
+    return responseBuilder(500, error.message);
   }
 };
 
