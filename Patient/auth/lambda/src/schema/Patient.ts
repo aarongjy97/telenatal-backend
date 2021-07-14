@@ -2,71 +2,74 @@ import { model, Schema } from "dynamoose";
 import { Document } from "dynamoose/dist/Document";
 
 export interface Patient extends Document {
-  name: string,
-  password: string,
-  email: string,
-  phone: string,
-  dob: Date,
-  address: string,
-  postalCode: Number,
-  allergies?: Allergy[],
-  healthConditions?: HealthCondition[],
-  babies?: Baby[]
+  name: string;
+  password: string;
+  email: string;
+  phone: string;
+  dob: Date;
+  address: string;
+  postalCode: Number;
+  allergies?: Allergy[];
+  healthConditions?: HealthCondition[];
+  babies?: Baby[];
 }
 
 const PatientSchema = new Schema({
-  name: String,
-  password: String,
-  email: String,
-  phone: String,
-  dob: Date,
-  address: String,
-  postalCode: Number,
+  name: {
+    type: String,
+    required: true,
+  },
+  password: { type: String, required: true },
+  email: { type: String, required: true },
+  phone: { type: String, required: true },
+  dob: { type: Date, required: true },
+  address: { type: String, required: true },
+  postalCode: { type: Number, required: true },
 });
 
 export interface Allergy extends Document {
-  allergyId: string,
-  name: string,
-  description: string,
-  patientId: string
+  allergyId?: string;
+  name: string;
+  description: string;
+  patientId: string;
 }
 
 const AllergySchema = new Schema({
-  allergyId: String,
-  name: String,
-  description: String,
-  patientId: String
-})
+  allergyId: { type: String, required: true },
+  name: { type: String, required: true },
+  description: { type: String, required: true },
+  patientId: { type: String, required: true },
+});
 
 export interface HealthCondition extends Document {
-  healthConditionId: string,
-  name: string,
-  description: string,
-  patientId: string
+  healthConditionId: { type: String; required: true };
+  name: { type: String; required: true };
+  description: { type: String; required: true };
+  patientId: { type: String; required: true };
 }
 
 const HealthConditionSchema = new Schema({
-  healthConditionId: String,
-  name: String,
-  description: String,
-  patientId: String
-})
+  healthConditionId: { type: String, required: true },
+  name: { type: String, required: true },
+  description: { type: String, required: true },
+  patientId: { type: String, required: true },
+});
 
 export interface Baby extends Document {
-  babyId: string,
-  patientId: string,
-  dueDate: Date,
-  babyName: string,
-  isBorn: boolean
+  babyId: string;
+  patientId: string;
+  dueDate: Date;
+  babyName: string;
+  isBorn: boolean;
 }
 
 const BabySchema = new Schema({
-  babyId: String,
-  patientId: String,
-  dueDate: Date,
-  babyName: String,
-  isBorn: Boolean
-})
+  babyId: { type: String, required: true },
+  patientId: { type: String, required: true },
+  dueDate: { type: Date, required: true },
+  babyName: { type: String, required: true },
+  isBorn: { type: Boolean, default: false, required: true },
+});
 
 export const PatientModel = model<Patient>("patient", PatientSchema, {
   create: false,
@@ -74,12 +77,16 @@ export const PatientModel = model<Patient>("patient", PatientSchema, {
 
 export const AllergyModel = model<Allergy>("allergy", AllergySchema, {
   create: false,
-})
+});
 
-export const HealthConditionModel = model<HealthCondition>("health-condition", HealthConditionSchema, {
-  create: false,
-})
+export const HealthConditionModel = model<HealthCondition>(
+  "health-condition",
+  HealthConditionSchema,
+  {
+    create: false,
+  }
+);
 
 export const BabyModel = model<Baby>("babies", BabySchema, {
   create: false,
-})
+});
