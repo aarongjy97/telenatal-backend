@@ -1,6 +1,6 @@
 import { APIGatewayProxyResult } from "aws-lambda";
-import { PatientModel, Patient } from "./schema/Patient";
 import * as bcrypt from "bcryptjs";
+import { Patient, PatientModel } from "./schema/Patient";
 
 export const lambdaHandler = async (
   event: any
@@ -19,6 +19,7 @@ export const lambdaHandler = async (
         return responseBuilder(500, "Unknown Error");
     }
   } catch (error) {
+    console.log(error);
     return responseBuilder(500, error.message);
   }
 };
