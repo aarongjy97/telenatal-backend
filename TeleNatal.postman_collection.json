@@ -1,0 +1,221 @@
+{
+	"info": {
+		"_postman_id": "458e323f-0a7f-4938-a931-262579e01164",
+		"name": "TeleNatal",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Patient Auth",
+			"item": [
+				{
+					"name": "Login",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"gen@gengen.com\",\n    \"password\": \"abc1234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apigateway}}/auth/patient/login",
+							"host": [
+								"{{apigateway}}"
+							],
+							"path": [
+								"auth",
+								"patient",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Genevieve\",\n    \"password\": \"abc1234\",\n    \"email\": \"gen@gengen.com\",\n    \"phone\": \"+6581234567\",\n    \"dob\": 1626187682710,\n    \"postalCode\": 521127\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apigateway}}/auth/patient/register",
+							"host": [
+								"{{apigateway}}"
+							],
+							"path": [
+								"auth",
+								"patient",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create New Appointment",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"date\": 10000,\n    \"location\": \"Singapore\",\n    \"postalCode\": 696969,\n    \"patientId\": \"gen@gengen.com\",\n    \"professionalId\": \"doctor@aws.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apigateway}}/appointment",
+					"host": [
+						"{{apigateway}}"
+					],
+					"path": [
+						"appointment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Appointment (Patient)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"patientId\": \"gen@gengen.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apigateway}}/appointments/patient",
+					"host": [
+						"{{apigateway}}"
+					],
+					"path": [
+						"appointments",
+						"patient"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Appointment",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"appointmentId\": \"1e9ae9e6-6ab3-444c-9e93-bb95ed08592c\",\n    \"date\": 20000000,\n    \"location\": \"Singapore\",\n    \"postalCode\": 777777,\n    \"patientId\": \"gen@gengen.com\",\n    \"professionalId\": \"doctor@aws.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apigateway}}/appointment",
+					"host": [
+						"{{apigateway}}"
+					],
+					"path": [
+						"appointment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Appointment",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"appointmentId\": \"1e9ae9e6-6ab3-444c-9e93-bb95ed08592c\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apigateway}}/appointment",
+					"host": [
+						"{{apigateway}}"
+					],
+					"path": [
+						"appointment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Appointment",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"appointmentId\": \"1e9ae9e6-6ab3-444c-9e93-bb95ed08592c\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apigateway}}/appointment",
+					"host": [
+						"{{apigateway}}"
+					],
+					"path": [
+						"appointment"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
