@@ -101,7 +101,7 @@ async function joinChimeMeeting(query) {
 
 async function deleteChimeMeeting(query) {
   await chime.deleteMeeting({
-    MeetingId: meetingCache[title].Meeting.MeetingId,
+    MeetingId: query.meetingId,
   });
   return responseBuilder(200, "successfully deleted chime meeting");
 }
