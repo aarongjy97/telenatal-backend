@@ -40,14 +40,13 @@ function responseBuilder(statusCode, msg) {
   };
 }
 
-async function createChimeMeeting(title, name, region) {
+async function createChimeMeeting() {
   var meeting = await chime.createMeeting({
     ClientRequestToken: uuidv4(),
   });
 
   const joinInfo = {
     JoinInfo: {
-      Title: title,
       Meeting: meeting,
     },
   };
@@ -58,7 +57,6 @@ async function createChimeMeeting(title, name, region) {
 async function joinChimeMeeting(query) {
   var meeting;
   var meetingId;
-  var title = query.title;
 
   // initialise meeting
   if (!query.meetingId) {
@@ -93,7 +91,6 @@ async function joinChimeMeeting(query) {
 
   const joinInfo = {
     JoinInfo: {
-      Title: title,
       Meeting: meeting,
       Attendee: attendee,
     },
@@ -102,7 +99,6 @@ async function joinChimeMeeting(query) {
   return responseBuilder(200, JSON.stringify(joinInfo));
 }
 
-// telecon/delete/meeting?title={title} [DELETE]
 async function deleteChimeMeeting(query) {
   await chime.deleteMeeting({
     MeetingId: meetingCache[title].Meeting.MeetingId,
