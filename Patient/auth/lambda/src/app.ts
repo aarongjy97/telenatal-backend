@@ -26,10 +26,9 @@ export const lambdaHandler = async (
 
 async function login(data: any): Promise<APIGatewayProxyResult> {
   const { email, password } = data;
-  const query = await PatientModel.scan("email").eq(email).limit(1).exec();
+  const patient = await PatientModel.get(email);
 
-  if (query.length === 1) {
-    const patient = query[0] as Patient;
+  if (patient) {
     const passwordCheck = await bcrypt.compare(password, patient.password);
 
     if (passwordCheck) {

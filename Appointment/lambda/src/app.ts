@@ -15,8 +15,6 @@ export const lambdaHandler = async (
     const data =
       typeof event.body === "string" ? JSON.parse(event.body) : event.body;
 
-    console.log(event);
-
     switch (method) {
       case "POST":
         return await createAppointment(data);
@@ -47,21 +45,15 @@ export const lambdaHandler = async (
 async function createAppointment(data: any): Promise<APIGatewayProxyResult> {
   const fields = data as Appointment;
 
-  const queryPatient = await PatientModel.scan("email")
-    .eq(fields.patientId)
-    .limit(1)
-    .exec();
+  const queryPatient = await PatientModel.get(fields.patientId)
 
-  const queryProfessional = await ProfessionalModel.scan("email")
-    .eq(fields.professionalId)
-    .limit(1)
-    .exec();
+  const queryProfessional = await ProfessionalModel.get(fields.professionalId);
 
-  if (queryPatient.length === 0) {
+  if (!queryPatient) {
     return responseBuilder(500, "Patient not found");
   }
 
-  if (queryProfessional.length == 0) {
+  if (!queryProfessional) {
     return responseBuilder(500, "Professional not found");
   }
 
@@ -98,6 +90,11 @@ async function deleteAppointment(data: any): Promise<APIGatewayProxyResult> {
 async function retrieveAppointment(data: any): Promise<APIGatewayProxyResult> {
   const { appointmentId } = data;
   const appointment = await AppointmentModel.get(appointmentId);
+
+  if (!appointment) {
+    return responseBuilder(500, "Appointment not found");
+  }
+  
   return responseBuilder(200, JSON.stringify(appointment));
 }
 

@@ -2,9 +2,9 @@ import { model, Schema } from "dynamoose";
 import { Document } from "dynamoose/dist/Document";
 
 export interface Patient extends Document {
+  email: string;
   name: string;
   password: string;
-  email: string;
   phone: string;
   dob: Date;
   address: string;
@@ -15,12 +15,12 @@ export interface Patient extends Document {
 }
 
 const PatientSchema = new Schema({
+  email: { type: String, required: true },
   name: {
     type: String,
     required: true,
   },
   password: { type: String, required: true },
-  email: { type: String, required: true },
   phone: { type: String, required: true },
   dob: { type: Date, required: true },
   address: { type: String, required: true },

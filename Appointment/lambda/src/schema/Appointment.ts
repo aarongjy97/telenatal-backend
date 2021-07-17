@@ -47,9 +47,9 @@ const AppointmentSchema = new Schema({
 });
 
 export interface Patient extends Document {
+  email: string;
   name: string;
   password: string;
-  email: string;
   phone: string;
   dob: Date;
   address: string;
@@ -57,12 +57,12 @@ export interface Patient extends Document {
 }
 
 const PatientSchema = new Schema({
+  email: { type: String, required: true },
   name: {
     type: String,
     required: true,
   },
   password: { type: String, required: true },
-  email: { type: String, required: true },
   phone: { type: String, required: true },
   dob: { type: Date, required: true },
   address: { type: String, required: true },
@@ -80,12 +80,12 @@ export interface Professional extends Document {
 }
 
 const ProfessionalSchema = new Schema({
+  email: String,
   type: {
     type: String,
     validate: (val) => val === 'doctor' || val === 'nurse'
   },
   name: String,
-  email: String,
   phone: String,
   education: String,
   medicalLicenseNo: String,
