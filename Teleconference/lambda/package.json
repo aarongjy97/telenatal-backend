@@ -7,17 +7,10 @@
   "author": "SAM CLI",
   "license": "MIT",
   "dependencies": {
-    "@types/aws-lambda": "^8.10.51",
-    "@types/bcryptjs": "^2.4.2",
-    "@types/node": "^13.13.5",
     "aws-sdk": "^2.655.0",
-    "bcryptjs": "^2.4.3",
-    "dynamoose": "^2.7.3",
-    "typescript": "^3.8.3"
+    "dynamoose": "^2.7.3"
   },
   "scripts": {
-    "compile": "tsc",
-    "postinstall": "npm run typings",
-    "typings": "typings install"
+
   }
 }

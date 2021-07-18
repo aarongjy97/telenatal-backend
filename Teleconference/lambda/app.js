@@ -1,7 +1,5 @@
 import * as Chime from "aws-sdk/clients/chime";
 import { v4 as uuidv4 } from "uuid";
-import { APIGatewayProxyResult } from "aws-lambda";
-import * as bcrypt from "bcryptjs";
 import * as AWS from "aws-sdk";
 
 const acccessKeyId = ""; // add credentials here
