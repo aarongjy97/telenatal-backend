@@ -1,18 +1,16 @@
-import { APIGatewayProxyResult } from "aws-lambda";
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import * as bcrypt from "bcryptjs";
 import { Patient, PatientModel } from "./schema/Patient";
 
 export const lambdaHandler = async (
-  event: any
+  event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
-  try {
-    const method = event.requestContext.http.method;
-
-    switch (method) {
-      case "POST":
+  try {    
+    switch (event.requestContext.resourcePath) {
+      case "/auth/patient/register":
         const registerData = JSON.parse(event.body);
         return await register(registerData);
-      case "GET":
+      case "/auth/patient/login":
         const loginData = JSON.parse(event.body);
         return await login(loginData);
       default:
@@ -72,6 +70,12 @@ function responseBuilder(
 ): APIGatewayProxyResult {
   return {
     statusCode: statusCode,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers":
+      "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With",
+    },
     body: msg,
   };
 }

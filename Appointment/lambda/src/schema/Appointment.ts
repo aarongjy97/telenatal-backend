@@ -15,6 +15,9 @@ export interface Appointment extends Document {
   healthRecordId?: string;
   testRecordId?: string;
 
+  patientName: string;
+  professionalName: string;
+
   consultationRecord?: ConsultationRecord;
 }
 
@@ -24,16 +27,37 @@ export interface ConsultationRecord extends Document {
 }
 
 const AppointmentSchema = new Schema({
-  appointmentId: String,
+  appointmentId: {
+    type: String,
+    required: true
+  },
   date: Date,
-  location: String,
+  location: {
+    type: String,
+    required: true
+  },
   postalCode: Number,
   purpose: String,
   remarks: String,
   notes: String,
 
-  patientId: String,
-  professionalId: String,
+  patientName: {
+    type: String,
+    required: true
+  },
+  professionalName: {
+    type: String,
+    required: true
+  },
+
+  patientId: {
+    type: String,
+    required: true
+  },
+  professionalId: {
+    type: String,
+    required: true
+  },
   healthRecordId: String,
   testRecordId: String,
 
