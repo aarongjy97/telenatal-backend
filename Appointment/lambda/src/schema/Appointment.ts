@@ -12,7 +12,7 @@ export interface Appointment extends Document {
 
   patientId: string;
   professionalId: string;
-  healthRecordId?: string;
+  healthRecord?: HealthRecord;
   testRecordId?: string;
 
   patientName: string;
@@ -21,20 +21,30 @@ export interface Appointment extends Document {
   consultationRecord?: ConsultationRecord;
 }
 
+export interface HealthRecord extends Document {
+  weight?: number;
+  waistMeasurement?: number;
+  heartRate?: number;
+  bloodPressure?: number;
+  notes?: string;
+  dateTime?: Date;
+}
+
 export interface ConsultationRecord extends Document {
   diagnosis?: string;
   medication?: string;
+  notes?: string;
 }
 
 const AppointmentSchema = new Schema({
   appointmentId: {
     type: String,
-    required: true
+    required: true,
   },
   date: Date,
   location: {
     type: String,
-    required: true
+    required: true,
   },
   postalCode: Number,
   purpose: String,
@@ -43,22 +53,34 @@ const AppointmentSchema = new Schema({
 
   patientName: {
     type: String,
-    required: true
+    required: true,
   },
   professionalName: {
     type: String,
-    required: true
+    required: true,
   },
 
   patientId: {
     type: String,
-    required: true
+    required: true,
   },
   professionalId: {
     type: String,
-    required: true
+    required: true,
   },
-  healthRecordId: String,
+
+  healthRecordId: {
+    type: Object,
+    schema: {
+      weight: Number,
+      waistMeasurement: Number,
+      heartRate: Number,
+      bloodPressure: Number,
+      notes: String,
+      dateTime: Date,
+    },
+  },
+  
   testRecordId: String,
 
   consultationRecord: {
@@ -66,6 +88,7 @@ const AppointmentSchema = new Schema({
     schema: {
       diagnosis: String,
       medication: String,
+      notes: String,
     },
   },
 });
@@ -94,36 +117,67 @@ const PatientSchema = new Schema({
 });
 
 export interface Professional extends Document {
-  type: 'doctor' | 'nurse';
-  name: string;
   email: string;
+  type: "doctor" | "nurse";
+  name: string;
   phone: string;
   education: string;
   medicalLicenseNo: string;
   clinicId: string;
+  password?: string;
 }
 
 const ProfessionalSchema = new Schema({
-  email: String,
+  email: {
+    type: String,
+    required: true,
+  },
   type: {
     type: String,
-    validate: (val) => val === 'doctor' || val === 'nurse'
+    validate: (val) => val === "doctor" || val === "nurse",
   },
-  name: String,
-  phone: String,
-  education: String,
-  medicalLicenseNo: String,
-  clinicId: String,
-})
+  name: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
+  education: {
+    type: String,
+    required: true,
+  },
+  medicalLicenseNo: {
+    type: String,
+    required: true,
+  },
+  clinicId: {
+    type: String,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+});
 
 export const PatientModel = model<Patient>("patient", PatientSchema, {
   create: false,
 });
 
-export const AppointmentModel = model<Appointment>("appointments", AppointmentSchema, {
-  create: false,
-});
+export const AppointmentModel = model<Appointment>(
+  "appointments",
+  AppointmentSchema,
+  {
+    create: false,
+  }
+);
 
-export const ProfessionalModel = model<Professional>("professional", ProfessionalSchema, {
-  create: false,
-})
+export const ProfessionalModel = model<Professional>(
+  "professional",
+  ProfessionalSchema,
+  {
+    create: false,
+  }
+);

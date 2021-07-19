@@ -27,9 +27,25 @@ export const lambdaHandler = async (
           case "/appointment":
             return await retrieveAppointment(event.queryStringParameters);
           case "/appointments/patient":
-            return await retrievePatientAppointments(event.queryStringParameters);
+            return await retrievePatientAppointments(
+              event.queryStringParameters
+            );
+          case "/appointments/patient/upcoming":
+            return await retrieveUpcomingPatientAppointments(
+              event.queryStringParameters
+            );
           case "/appointments/professional":
-            return responseBuilder(500, "professional not built yet");
+            return await retrieveProfessionalAppointments(
+              event.queryStringParameters
+            );
+          case "/appointments/professional/upcoming":
+            return await retrieveUpcomingProfessionalAppointments(
+              event.queryStringParameters
+            );
+          case "/professional/doctors":
+            return await retrieveDoctors();
+          case "/professional/nurses":
+            return await retrieveNurses();
           default:
             return responseBuilder(500, "not built yet");
         }
@@ -125,7 +141,94 @@ async function retrievePatientAppointments(
     .where("patientId")
     .eq(patientId)
     .exec();
-  return responseBuilder(200, JSON.stringify(appointments));
+  return responseBuilder(
+    200,
+    JSON.stringify(
+      appointments.sort((a, b) => {
+        return a.date.getTime() - b.date.getTime();
+      })
+    )
+  );
+}
+
+async function retrieveProfessionalAppointments(
+  data: any
+): Promise<APIGatewayProxyResult> {
+  const { professionalId } = data;
+  const appointments = await AppointmentModel.scan()
+    .where("professionalId")
+    .eq(professionalId)
+    .exec();
+  return responseBuilder(
+    200,
+    JSON.stringify(
+      appointments.sort((a, b) => {
+        return a.date.getTime() - b.date.getTime();
+      })
+    )
+  );
+}
+
+async function retrieveDoctors(): Promise<APIGatewayProxyResult> {
+  const doctors = await ProfessionalModel.scan()
+    .where("type")
+    .eq("doctor")
+    .exec();
+  return responseBuilder(
+    200,
+    JSON.stringify(
+      doctors.map((doctor) => {
+        delete doctor.password;
+      })
+    )
+  );
+}
+
+async function retrieveNurses(): Promise<APIGatewayProxyResult> {
+  const nurses = await ProfessionalModel.scan()
+    .where("type")
+    .eq("nurse")
+    .exec();
+  return responseBuilder(
+    200,
+    JSON.stringify(
+      nurses.map((nurse) => {
+        delete nurse.password;
+      })
+    )
+  );
+}
+
+async function retrieveUpcomingProfessionalAppointments(
+  data: any
+): Promise<APIGatewayProxyResult> {
+  const { professionalId } = data;
+  const appointments = await AppointmentModel.scan()
+    .where("professionalId")
+    .eq(professionalId)
+    .exec();
+
+  const upcoming = appointments.filter((appt) => {
+    return (new Date().getTime() - appt.date.getTime()) <= 3600000;
+  });
+
+  return responseBuilder(200, JSON.stringify(upcoming));
+}
+
+async function retrieveUpcomingPatientAppointments(
+  data: any
+): Promise<APIGatewayProxyResult> {
+  const { patientId } = data;
+  const appointments = await AppointmentModel.scan()
+    .where("patientId")
+    .eq(patientId)
+    .exec();
+
+  const upcoming = appointments.filter((appt) => {
+    return (new Date().getTime() - appt.date.getTime()) <= 3600000;
+  });
+
+  return responseBuilder(200, JSON.stringify(upcoming));
 }
 
 function responseBuilder(
@@ -138,7 +241,7 @@ function responseBuilder(
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "POST, PUT, GET, DELETE OPTIONS",
       "Access-Control-Allow-Headers":
-      "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With",
+        "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With",
     },
     body: msg,
   };
