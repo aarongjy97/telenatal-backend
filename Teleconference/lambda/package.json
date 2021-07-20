@@ -16,8 +16,6 @@
     "typescript": "^3.8.3"
   },
   "scripts": {
-    "compile": "tsc",
-    "postinstall": "npm run typings",
-    "typings": "typings install"
+    "compile": "tsc"
   }
 }
