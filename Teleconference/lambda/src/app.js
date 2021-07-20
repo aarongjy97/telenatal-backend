@@ -4,15 +4,7 @@ import { APIGatewayProxyResult } from "aws-lambda";
 import * as bcrypt from "bcryptjs";
 import * as AWS from "aws-sdk";
 
-const acccessKeyId = ""; // add credentials here
-const secretAccessKey = ""; // add credentials here
-AWS.config.credentials = new AWS.Credentials(acccessKeyId, secretAccessKey);
-
 const region = "us-east-1";
-const chime = new Chime({ region: region });
-chime.endpoint = new AWS.Endpoint(
-  "https://service.chime.aws.amazon.com/console"
-);
 
 export const lambdaHandler = async (event) => {
   try {
@@ -41,6 +33,11 @@ function responseBuilder(statusCode, msg) {
 }
 
 async function createChimeMeeting() {
+  AWS.config.credentials = new AWS.Credentials(acccessKeyId, secretAccessKey);
+  const chime = new Chime({ region: region });
+  chime.endpoint = new AWS.Endpoint(
+    "https://service.chime.aws.amazon.com/console"
+  );
   var meeting = await chime.createMeeting({
     ClientRequestToken: uuidv4(),
   });
@@ -55,6 +52,12 @@ async function createChimeMeeting() {
 }
 
 async function joinChimeMeeting(query) {
+  AWS.config.credentials = new AWS.Credentials(acccessKeyId, secretAccessKey);
+  const chime = new Chime({ region: region });
+  chime.endpoint = new AWS.Endpoint(
+    "https://service.chime.aws.amazon.com/console"
+  );
+
   var meeting;
   var meetingId;
 
@@ -100,6 +103,12 @@ async function joinChimeMeeting(query) {
 }
 
 async function deleteChimeMeeting(query) {
+  AWS.config.credentials = new AWS.Credentials(acccessKeyId, secretAccessKey);
+  const chime = new Chime({ region: region });
+  chime.endpoint = new AWS.Endpoint(
+    "https://service.chime.aws.amazon.com/console"
+  );
+
   await chime.deleteMeeting({
     MeetingId: query.meetingId,
   });
