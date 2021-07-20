@@ -69,7 +69,7 @@ const AppointmentSchema = new Schema({
     required: true,
   },
 
-  healthRecordId: {
+  healthRecord: {
     type: Object,
     schema: {
       weight: Number,
