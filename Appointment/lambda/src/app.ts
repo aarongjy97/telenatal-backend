@@ -2,9 +2,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { v4 as uuidv4 } from "uuid";
 import {
   Appointment,
-  AppointmentModel,
-  PatientModel,
-  ProfessionalModel
+  AppointmentModel, ClinicModel, PatientModel, ProfessionalModel
 } from "./schema/Appointment";
 
 export const lambdaHandler = async (
@@ -180,6 +178,11 @@ async function retrieveDoctors(): Promise<APIGatewayProxyResult> {
     .where("type")
     .eq("doctor")
     .exec();
+
+  for (const doctor of doctors) {
+    doctor.clinic = await ClinicModel.get(doctor.clinicId);
+  }
+
   return responseBuilder(
     200,
     JSON.stringify(
@@ -196,6 +199,11 @@ async function retrieveNurses(): Promise<APIGatewayProxyResult> {
     .where("type")
     .eq("nurse")
     .exec();
+
+  for (const nurse of nurses) {
+    nurse.clinic = await ClinicModel.get(nurse.clinicId);
+  }
+  
   return responseBuilder(
     200,
     JSON.stringify(
@@ -319,6 +327,7 @@ async function getProfessional(data: any): Promise<APIGatewayProxyResult> {
   const professional = await ProfessionalModel.get(professionalId);
   if (professional) {
     delete professional.password;
+    professional.clinic = await ClinicModel.get(professional.clinicId);
     return responseBuilder(200, JSON.stringify(professional));
   } else {
     return responseBuilder(500, "Professional not found");

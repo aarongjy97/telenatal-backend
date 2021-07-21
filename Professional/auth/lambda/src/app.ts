@@ -1,6 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import * as bcrypt from "bcryptjs";
-import { Professional, ProfessionalModel } from "./schema/Professional";
+import { ClinicModel, Professional, ProfessionalModel } from "./schema/Professional";
 
 export const lambdaHandler = async (
   event: APIGatewayProxyEvent
@@ -30,7 +30,8 @@ async function login(data: any): Promise<APIGatewayProxyResult> {
     const passwordCheck = await bcrypt.compare(password, professional.password);
 
     if (passwordCheck) {
-      professional.password = "";
+      delete professional.password;
+      professional.clinic = await ClinicModel.get(professional.clinicId);
       return responseBuilder(200, JSON.stringify(professional));
     } else {
       return responseBuilder(401, "Invalid credentials");
@@ -43,13 +44,16 @@ async function login(data: any): Promise<APIGatewayProxyResult> {
 async function register(data: any): Promise<APIGatewayProxyResult> {
   const fields = data as Professional;
 
-  const query = await ProfessionalModel.scan("email")
-    .eq(fields.email)
-    .limit(1)
-    .exec();
+  const query = await ProfessionalModel.get(fields.email)
 
-  if (query.length != 0) {
+  if (query) {
     return responseBuilder(422, "User already exists");
+  }
+
+  const clinic = await ClinicModel.get(fields.clinicId);
+
+  if (!clinic) {
+    return responseBuilder(500, "Clinic not found");
   }
 
   const salt = await bcrypt.genSalt();

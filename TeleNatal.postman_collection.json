@@ -43,7 +43,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Genevieve\",\n    \"password\": \"abc1234\",\n    \"email\": \"gengen@gengen.com\",\n    \"phone\": \"+6581234567\",\n    \"dob\": 1626187682710,\n    \"address\": \"istana\",\n    \"postalCode\": 521127\n}",
+							"raw": "{\n    \"name\": \"Genevieve\",\n    \"password\": \"abc1234\",\n    \"email\": \"gooohjiayi@gmail.com\",\n    \"phone\": \"+6581234567\",\n    \"dob\": 1626187682710,\n    \"address\": \"istana\",\n    \"postalCode\": 521127\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -87,7 +87,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"date\": 10000,\n    \"location\": \"Singapore\",\n    \"postalCode\": 696969,\n    \"patientId\": \"gengen@gengen.com\",\n    \"professionalId\": \"doctor@aws.com\"\n}",
+							"raw": "{\n    \"date\": 1626739200000,\n    \"location\": \"Singapore\",\n    \"postalCode\": 696969,\n    \"patientId\": \"gengen@gengen.com\",\n    \"professionalId\": \"doctor1@aws.com\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -113,7 +113,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"appointmentId\": \"1e9ae9e6-6ab3-444c-9e93-bb95ed08592c\",\n    \"date\": 20000000,\n    \"location\": \"Singapore\",\n    \"postalCode\": 777777,\n    \"patientId\": \"gen@gengen.com\",\n    \"professionalId\": \"doctor@aws.com\"\n}",
+							"raw": "{\n    \"appointmentId\": \"f4aa734e-8762-4732-b54e-0bfff47ab9d4\",\n    \"date\": 20000000,\n    \"location\": \"Singapore\",\n    \"postalCode\": 777777,\n    \"patientId\": \"gen@gengen.com\",\n    \"professionalId\": \"doctor@aws.com\",\n    \"purpose\": \"Regular Checkup\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -314,6 +314,34 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get Professional Availability",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apigateway}}/professional/availability?date=2021-07-20&professionalId=doctor1@aws.com",
+							"host": [
+								"{{apigateway}}"
+							],
+							"path": [
+								"professional",
+								"availability"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "2021-07-20"
+								},
+								{
+									"key": "professionalId",
+									"value": "doctor1@aws.com"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -355,7 +383,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"doctor1@aws.com\",\n    \"type\": \"doctor\",\n    \"name\": \"Dr Pepper\",\n    \"phone\": \"+65 8123 9082\",\n    \"education\": \"MBBS NUS\",\n    \"medicalLicenseNo\": \"69696969\",\n    \"clinicId\": \"12345\",\n    \"password\": \"password123\"\n}",
+							"raw": "{\n    \"email\": \"doctor1@aws.com\",\n    \"type\": \"doctor\",\n    \"name\": \"Dr Pepper\",\n    \"phone\": \"+65 8123 9082\",\n    \"education\": \"MBBS NUS\",\n    \"medicalLicenseNo\": \"69696969\",\n    \"clinicId\": \"24d9082b-f064-457c-bf0f-c1c977aee20e\",\n    \"password\": \"password123\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -371,6 +399,180 @@
 								"auth",
 								"professional",
 								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get User Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apigateway}}/user/patient?patientId=gengen@gengen.com",
+							"host": [
+								"{{apigateway}}"
+							],
+							"path": [
+								"user",
+								"patient"
+							],
+							"query": [
+								{
+									"key": "patientId",
+									"value": "gengen@gengen.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Professional Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apigateway}}/user/professional?professionalId=doctor1@aws.com",
+							"host": [
+								"{{apigateway}}"
+							],
+							"path": [
+								"user",
+								"professional"
+							],
+							"query": [
+								{
+									"key": "professionalId",
+									"value": "doctor1@aws.com"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Clinic",
+			"item": [
+				{
+					"name": "Create Clinic",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"clinicName\": \"NUHS\",\n    \"clinicAddress\": \"10 Lower Kent Ridge Drive\",\n    \"clinicPostalCode\": 123456\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apigateway}}/clinic",
+							"host": [
+								"{{apigateway}}"
+							],
+							"path": [
+								"clinic"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Clinic",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"clinicId\": \"24d9082b-f064-457c-bf0f-c1c977aee20e\",\n    \"clinicName\": \"NUHS\",\n    \"clinicAddress\": \"10 Lower Kent Ridge Drive\",\n    \"clinicPostalCode\": 123457\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apigateway}}/clinic",
+							"host": [
+								"{{apigateway}}"
+							],
+							"path": [
+								"clinic"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Clinics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apigateway}}/clinics",
+							"host": [
+								"{{apigateway}}"
+							],
+							"path": [
+								"clinics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Clinic",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apigateway}}/clinic?clinicId=24d9082b-f064-457c-bf0f-c1c977aee20e",
+							"host": [
+								"{{apigateway}}"
+							],
+							"path": [
+								"clinic"
+							],
+							"query": [
+								{
+									"key": "clinicId",
+									"value": "24d9082b-f064-457c-bf0f-c1c977aee20e"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Professionals",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apigateway}}/clinic/professionals?clinicId=24d9082b-f064-457c-bf0f-c1c977aee20e",
+							"host": [
+								"{{apigateway}}"
+							],
+							"path": [
+								"clinic",
+								"professionals"
+							],
+							"query": [
+								{
+									"key": "clinicId",
+									"value": "24d9082b-f064-457c-bf0f-c1c977aee20e"
+								}
 							]
 						}
 					},

@@ -43,12 +43,9 @@ async function login(data: any): Promise<APIGatewayProxyResult> {
 async function register(data: any): Promise<APIGatewayProxyResult> {
   const fields = data as Patient;
 
-  const query = await PatientModel.scan("email")
-    .eq(fields.email)
-    .limit(1)
-    .exec();
+  const query = await PatientModel.get(fields.email);
 
-  if (query.length != 0) {
+  if (query) {
     return responseBuilder(422, "User already exists");
   }
 

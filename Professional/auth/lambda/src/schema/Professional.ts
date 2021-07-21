@@ -10,6 +10,7 @@ export interface Professional extends Document {
   medicalLicenseNo: string;
   clinicId: string;
   password: string;
+  clinic?: Clinic;
 }
 
 const ProfessionalSchema = new Schema({
@@ -47,6 +48,32 @@ const ProfessionalSchema = new Schema({
   },
 });
 
+export interface Clinic extends Document {
+  clinicId?: string;
+  clinicName: string;
+  clinicAddress: string;
+  clinicPostalCode: number;
+}
+
+export const ClinicSchema = new Schema({
+  clinicId: {
+    type: String,
+    required: true,
+  },
+  clinicName: {
+    type: String,
+    required: true,
+  },
+  clinicAddress: {
+    type: String,
+    required: true,
+  },
+  clinicPostalCode: {
+    type: Number,
+    required: true,
+  },
+});
+
 export const ProfessionalModel = model<Professional>(
   "professional",
   ProfessionalSchema,
@@ -54,3 +81,7 @@ export const ProfessionalModel = model<Professional>(
     create: false,
   }
 );
+
+export const ClinicModel = model<Clinic>("clinic", ClinicSchema, {
+  create: false,
+});
