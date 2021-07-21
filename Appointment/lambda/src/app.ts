@@ -15,8 +15,6 @@ export const lambdaHandler = async (
     const data =
       typeof event.body === "string" ? JSON.parse(event.body) : event.body;
 
-    const params = event.queryStringParameters;
-
     console.log(event);
 
     switch (method) {
@@ -46,6 +44,10 @@ export const lambdaHandler = async (
             return await retrieveDoctors();
           case "/professional/nurses":
             return await retrieveNurses();
+          case "/professional/availability":
+            return await getProfessionalAvailability(
+              event.queryStringParameters
+            );
           default:
             return responseBuilder(500, "not built yet");
         }
@@ -179,6 +181,7 @@ async function retrieveDoctors(): Promise<APIGatewayProxyResult> {
     JSON.stringify(
       doctors.map((doctor) => {
         delete doctor.password;
+        return doctor;
       })
     )
   );
@@ -194,6 +197,7 @@ async function retrieveNurses(): Promise<APIGatewayProxyResult> {
     JSON.stringify(
       nurses.map((nurse) => {
         delete nurse.password;
+        return nurse;
       })
     )
   );
@@ -209,7 +213,7 @@ async function retrieveUpcomingProfessionalAppointments(
     .exec();
 
   const upcoming = appointments.filter((appt) => {
-    return (new Date().getTime() - appt.date.getTime()) <= 3600000;
+    return new Date().getTime() - appt.date.getTime() <= 3600000;
   });
 
   return responseBuilder(200, JSON.stringify(upcoming));
@@ -225,10 +229,74 @@ async function retrieveUpcomingPatientAppointments(
     .exec();
 
   const upcoming = appointments.filter((appt) => {
-    return (new Date().getTime() - appt.date.getTime()) <= 3600000;
+    return new Date().getTime() - appt.date.getTime() <= 3600000;
   });
 
   return responseBuilder(200, JSON.stringify(upcoming));
+}
+
+async function getProfessionalAvailability(
+  data: any
+): Promise<APIGatewayProxyResult> {
+  const { date, professionalId } = data;
+
+  let queryDate = new Date(date);
+
+  console.log(queryDate.toLocaleDateString("en-SG"));
+
+  /* Queries all appts first (no time to research how to query on same day only) */
+  const appointments = await AppointmentModel.scan()
+    .where("professionalId")
+    .eq(professionalId)
+    .exec();
+
+  const datesAreOnSameDay = (first: Date, second: Date) =>
+    first.getFullYear() === second.getFullYear() &&
+    first.getMonth() === second.getMonth() &&
+    first.getDate() === second.getDate();
+
+  const bookedSlots = appointments
+    .filter((appt) => datesAreOnSameDay(appt.date, queryDate))
+    .map((appt) => appt.date.getTime());
+
+  console.log(bookedSlots);
+
+  const fixedTimeslots = [
+    [0, 0, 0, 0],
+    [0, 30, 0, 0],
+    [1, 0, 0, 0],
+    [1, 30, 0, 0],
+    [2, 0, 0, 0],
+    [2, 30, 0, 0],
+    [3, 0, 0, 0],
+    [3, 30, 0, 0],
+    [4, 0, 0, 0],
+    [4, 30, 0, 0],
+    [5, 0, 0, 0],
+    [5, 30, 0, 0],
+    [6, 0, 0, 0],
+    [6, 30, 0, 0],
+    [7, 0, 0, 0],
+    [7, 30, 0, 0],
+    [8, 0, 0, 0],
+    [8, 30, 0, 0],
+    [9, 0, 0, 0],
+    [9, 30, 0, 0],
+    [10, 0, 0, 0],
+  ];
+
+  const timeslots = fixedTimeslots
+    .map(
+      (slot) =>
+        new Date(queryDate.setUTCHours(slot[0], slot[1], slot[2], slot[3]))
+    )
+    .map((slot) => slot.getTime());
+
+  const availSlots = timeslots
+    .filter((slot) => !bookedSlots.includes(slot))
+    .map((slot) => new Date(slot));
+
+  return responseBuilder(200, JSON.stringify(availSlots));
 }
 
 function responseBuilder(
