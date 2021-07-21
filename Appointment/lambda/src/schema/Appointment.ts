@@ -13,12 +13,18 @@ export interface Appointment extends Document {
   patientId: string;
   professionalId: string;
   healthRecord?: HealthRecord;
-  testRecordId?: string;
+  testRecord?: TestRecord;
 
   patientName: string;
   professionalName: string;
 
   consultationRecord?: ConsultationRecord;
+}
+
+export interface TestRecord extends Document {
+  time?: Date;
+  testName?: string;
+  notes?: string;
 }
 
 export interface HealthRecord extends Document {
@@ -81,7 +87,14 @@ const AppointmentSchema = new Schema({
     },
   },
   
-  testRecordId: String,
+  testRecord: {
+    type: Object,
+    schema: {
+      time: Date,
+      testName: String,
+      notes: String
+    }
+  },
 
   consultationRecord: {
     type: Object,
@@ -96,7 +109,7 @@ const AppointmentSchema = new Schema({
 export interface Patient extends Document {
   email: string;
   name: string;
-  password: string;
+  password?: string;
   phone: string;
   dob: Date;
   address: string;

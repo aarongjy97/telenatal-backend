@@ -48,6 +48,10 @@ export const lambdaHandler = async (
             return await getProfessionalAvailability(
               event.queryStringParameters
             );
+          case "/user/professional":
+            return getProfessional(event.queryStringParameters);
+          case "/user/patient":
+            return getPatient(event.queryStringParameters);
           default:
             return responseBuilder(500, "not built yet");
         }
@@ -297,6 +301,28 @@ async function getProfessionalAvailability(
     .map((slot) => new Date(slot));
 
   return responseBuilder(200, JSON.stringify(availSlots));
+}
+
+async function getPatient(data: any): Promise<APIGatewayProxyResult> {
+  const { patientId } = data;
+  const patient = await PatientModel.get(patientId);
+  if (patient) {
+    delete patient.password;
+    return responseBuilder(200, JSON.stringify(patient));
+  } else {
+    return responseBuilder(500, "Patient not found");
+  }
+}
+
+async function getProfessional(data: any): Promise<APIGatewayProxyResult> {
+  const { professionalId } = data;
+  const professional = await ProfessionalModel.get(professionalId);
+  if (professional) {
+    delete professional.password;
+    return responseBuilder(200, JSON.stringify(professional));
+  } else {
+    return responseBuilder(500, "Professional not found");
+  }
 }
 
 function responseBuilder(
