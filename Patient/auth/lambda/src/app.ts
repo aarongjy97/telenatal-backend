@@ -49,6 +49,8 @@ async function register(data: any): Promise<APIGatewayProxyResult> {
     return responseBuilder(422, "User already exists");
   }
 
+  console.log(fields);
+
   const salt = await bcrypt.genSalt();
   const hash = await bcrypt.hash(fields.password, salt);
   fields.password = hash;

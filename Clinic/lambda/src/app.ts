@@ -44,7 +44,7 @@ async function createClinic(data: any): Promise<APIGatewayProxyResult> {
   fields.clinicId = uuidv4();
   const clinic = new ClinicModel(fields);
   await clinic.save();
-  return responseBuilder(202, `Clinic ${fields.clinicName} saved`);
+  return responseBuilder(202, fields.clinicId);
 }
 
 async function updateClinic(data: any): Promise<APIGatewayProxyResult> {

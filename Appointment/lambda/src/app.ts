@@ -1,8 +1,12 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+import { S3 } from "aws-sdk";
 import { v4 as uuidv4 } from "uuid";
 import {
   Appointment,
-  AppointmentModel, ClinicModel, PatientModel, ProfessionalModel
+  AppointmentModel,
+  ClinicModel,
+  PatientModel,
+  ProfessionalModel
 } from "./schema/Appointment";
 
 export const lambdaHandler = async (
@@ -50,6 +54,8 @@ export const lambdaHandler = async (
             return getProfessional(event.queryStringParameters);
           case "/user/patient":
             return getPatient(event.queryStringParameters);
+          case "/user/patients":
+            return retrievePatients();
           default:
             return responseBuilder(500, "not built yet");
         }
@@ -134,6 +140,18 @@ async function retrieveAppointment(data: any): Promise<APIGatewayProxyResult> {
     return responseBuilder(500, "Appointment not found");
   }
 
+  if (appointment.imagePath) {
+    const s3 = new S3();
+    const image = await s3
+      .getObject({
+        Bucket: "telehealth-ultrasound",
+        Key: appointment.imagePath,
+      })
+      .promise();
+
+    appointment.imageBuffer = new Buffer(image.Body as Buffer);
+  }
+
   return responseBuilder(200, JSON.stringify(appointment));
 }
 
@@ -145,6 +163,22 @@ async function retrievePatientAppointments(
     .where("patientId")
     .eq(patientId)
     .exec();
+
+  const s3 = new S3();
+
+  for (const appointment of appointments) {
+    if (appointment.imagePath) {
+      const image = await s3
+        .getObject({
+          Bucket: "telehealth-ultrasound",
+          Key: appointment.imagePath,
+        })
+        .promise();
+
+      appointment.imageBuffer = new Buffer(image.Body as Buffer);
+    }
+  }
+
   return responseBuilder(
     200,
     JSON.stringify(
@@ -163,6 +197,21 @@ async function retrieveProfessionalAppointments(
     .where("professionalId")
     .eq(professionalId)
     .exec();
+
+  const s3 = new S3();
+
+  for (const appointment of appointments) {
+    if (appointment.imagePath) {
+      const image = await s3
+        .getObject({
+          Bucket: "telehealth-ultrasound",
+          Key: appointment.imagePath,
+        })
+        .promise();
+
+      appointment.imageBuffer = new Buffer(image.Body as Buffer);
+    }
+  }
   return responseBuilder(
     200,
     JSON.stringify(
@@ -203,13 +252,26 @@ async function retrieveNurses(): Promise<APIGatewayProxyResult> {
   for (const nurse of nurses) {
     nurse.clinic = await ClinicModel.get(nurse.clinicId);
   }
-  
+
   return responseBuilder(
     200,
     JSON.stringify(
       nurses.map((nurse) => {
         delete nurse.password;
         return nurse;
+      })
+    )
+  );
+}
+
+async function retrievePatients(): Promise<APIGatewayProxyResult> {
+  const patients = await PatientModel.scan().exec();
+  return responseBuilder(
+    200,
+    JSON.stringify(
+      patients.map((patient) => {
+        delete patient.password;
+        return patient;
       })
     )
   );

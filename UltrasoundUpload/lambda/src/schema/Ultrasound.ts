@@ -23,7 +23,6 @@ export interface Appointment extends Document {
   testRecord?: TestRecord;
   ultrasoundRecord?: UltrasoundRecord;
   imagePath?: string;
-  imageBuffer?: Buffer;
 }
 
 export interface TestRecord extends Document {
@@ -136,13 +135,11 @@ const AppointmentSchema = new Schema({
 export interface Patient extends Document {
   email: string;
   name: string;
-  password: string;
+  password?: string;
   phone: string;
   dob: Date;
   address: string;
   postalCode: Number;
-  allergies?: string[];
-  healthConditions?: string[];
 }
 
 const PatientSchema = new Schema({
@@ -156,81 +153,6 @@ const PatientSchema = new Schema({
   dob: { type: Date, required: true },
   address: { type: String, required: true },
   postalCode: { type: Number, required: true },
-  healthConditions: { type: Array, schema: [String] },
-  allergies: { type: Array, schema: [String] },
-});
-
-export interface Professional extends Document {
-  email: string;
-  type: "doctor" | "nurse";
-  name: string;
-  phone: string;
-  education: string;
-  medicalLicenseNo: string;
-  clinicId: string;
-  password?: string;
-  clinic?: Clinic;
-}
-
-const ProfessionalSchema = new Schema({
-  email: {
-    type: String,
-    required: true,
-  },
-  type: {
-    type: String,
-    validate: (val) => val === "doctor" || val === "nurse",
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-  phone: {
-    type: String,
-    required: true,
-  },
-  education: {
-    type: String,
-    required: true,
-  },
-  medicalLicenseNo: {
-    type: String,
-    required: true,
-  },
-  clinicId: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-});
-
-export interface Clinic extends Document {
-  clinicId?: string;
-  clinicName: string;
-  clinicAddress: string;
-  clinicPostalCode: number;
-}
-
-export const ClinicSchema = new Schema({
-  clinicId: {
-    type: String,
-    required: true,
-  },
-  clinicName: {
-    type: String,
-    required: true,
-  },
-  clinicAddress: {
-    type: String,
-    required: true,
-  },
-  clinicPostalCode: {
-    type: Number,
-    required: true,
-  },
 });
 
 export const PatientModel = model<Patient>("patient", PatientSchema, {
@@ -244,15 +166,3 @@ export const AppointmentModel = model<Appointment>(
     create: false,
   }
 );
-
-export const ProfessionalModel = model<Professional>(
-  "professional",
-  ProfessionalSchema,
-  {
-    create: false,
-  }
-);
-
-export const ClinicModel = model<Clinic>("clinic", ClinicSchema, {
-  create: false,
-});

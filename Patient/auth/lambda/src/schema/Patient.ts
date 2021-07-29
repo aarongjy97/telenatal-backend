@@ -9,8 +9,8 @@ export interface Patient extends Document {
   dob: Date;
   address: string;
   postalCode: Number;
-  allergies?: Allergy[];
-  healthConditions?: HealthCondition[];
+  allergies?: string[];
+  healthConditions?: string[];
   babies?: Baby[];
 }
 
@@ -25,34 +25,8 @@ const PatientSchema = new Schema({
   dob: { type: Date, required: true },
   address: { type: String, required: true },
   postalCode: { type: Number, required: true },
-});
-
-export interface Allergy extends Document {
-  allergyId?: string;
-  name: string;
-  description: string;
-  patientId: string;
-}
-
-const AllergySchema = new Schema({
-  allergyId: { type: String, required: true },
-  name: { type: String, required: true },
-  description: { type: String, required: true },
-  patientId: { type: String, required: true },
-});
-
-export interface HealthCondition extends Document {
-  healthConditionId: { type: String; required: true };
-  name: { type: String; required: true };
-  description: { type: String; required: true };
-  patientId: { type: String; required: true };
-}
-
-const HealthConditionSchema = new Schema({
-  healthConditionId: { type: String, required: true },
-  name: { type: String, required: true },
-  description: { type: String, required: true },
-  patientId: { type: String, required: true },
+  healthConditions: { type: Array, schema: [String] },
+  allergies: { type: Array, schema: [String] },
 });
 
 export interface Baby extends Document {
@@ -72,21 +46,5 @@ const BabySchema = new Schema({
 });
 
 export const PatientModel = model<Patient>("patient", PatientSchema, {
-  create: false,
-});
-
-export const AllergyModel = model<Allergy>("allergy", AllergySchema, {
-  create: false,
-});
-
-export const HealthConditionModel = model<HealthCondition>(
-  "health-condition",
-  HealthConditionSchema,
-  {
-    create: false,
-  }
-);
-
-export const BabyModel = model<Baby>("babies", BabySchema, {
   create: false,
 });
